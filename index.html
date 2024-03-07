@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pexeso</title>
+    <link rel="stylesheet" href="./opening.css">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+    <section class="opening_dialog">
+        <h1><span onclick="hrat()">Hrát</span> Pexeso</h1>
+        <div class="pexeso_formats">
+            <div data-format="2" class="format_box" id="selected_format">2x2</div>
+            <div data-format="4" class="format_box">4x4</div>
+            <div data-format="6" class="format_box">6x6</div>
+            <div data-format="8" class="format_box">8x8</div>
+            <div data-format="10" class="format_box">10x10</div>
+            <div data-format="12" class="format_box">12x12</div>
+        </div>
+    </section>
+
+
+    <script>
+        const opening_dialog = document.querySelector(".opening_dialog")
+        const formats = document.getElementsByClassName("format_box")
+        let selected = document.getElementById("selected_format")
+        let format = selected.getAttribute("data-format")
+        /*
+            Prodani stylu pro bunky formatu. Nedelam to pres css:hover, protoze tim, ze pridam
+            id danymu prvku, tak tim ho take vyberu.
+        */
+        for(let element of formats){
+            element.onclick = function (){ 
+                if(selected != element){
+                    selected.removeAttribute("id")
+                }
+                format = element.getAttribute("data-format")
+                selected = element;
+            }
+            element.onmouseenter = function(){ 
+                element.setAttribute("id" , "selected_format")
+            }
+            element.onmouseleave = function(){ 
+                if(selected != element){ 
+                    element.removeAttribute("id")
+                }
+            }
+        }
+        //------------------------------------------------------------------
+
+        let cards = []
+ 
+        const container = document.createElement("section")
+        container.setAttribute("class" , "container")
+        const body_section = document.createElement("section")
+        body_section.setAttribute("class" , "body_section")
+        body_section.innerHTML = `<div class="body">0</div> <div class="pokusy">0</div>`
+        const game_section = document.createElement("section")
+        game_section.setAttribute("class" , "game_section")
+
+
+        function hrat(){ 
+            opening_dialog.style.opacity = 0
+
+            setTimeout(() => {
+                document.body.removeChild(opening_dialog)
+            }, 200)
+
+            while(cards.length < (format * 2) * 2){ 
+                const number = Math.floor(Math.random() * format) + 1
+
+                if(cards.indexOf(number) === -1 || cards.indexOf(number) == cards.lastIndexOf(number)){
+                    const card = document.createElement("img")
+                    card.setAttribute("id", number)
+                    card.setAttribute("class" , "karta")
+                    card.setAttribute("src", "images/rub.jpg")
+                    card.setAttribute("data-lic", `images/${number}.jpg`)
+                    card.addEventListener("click" , tah)
+                    cards.push(number, card)
+                    game_section.appendChild(card)
+                }
+            }
+            container.appendChild(body_section)
+            container.appendChild(game_section)
+            document.body.appendChild(container)
+        }
+
+        let pairs = []
+        let playable = true
+        let body = 0
+        let pokusy = 0
+        function tah(){
+
+
+           if(playable){
+                const new_src = this.getAttribute("data-lic")
+                const current_src = this.getAttribute("src")
+                this.setAttribute("data-lic" , current_src)
+                this.setAttribute("src" , new_src)
+
+                if(current_src == "images/rub.jpg"){
+                    pairs.push(this)
+                }else{
+                    pokusy += 1
+                    pairs.pop()
+                }
+                
+                if(pairs.length == 2){
+                    pokusy += 1
+                    playable = false 
+                    if(pairs[0].getAttribute("src") == pairs[1].getAttribute("src")){
+                        //right
+                        body += 10
+                        body_section.innerHTML = body
+                        setTimeout(() => {
+                            for(let x of pairs){ 
+                                playable = true
+                                game_section.removeChild(x)
+                            }
+                            pairs = []
+                            playable = true
+                            if(body == format * 10){ 
+                                document.body.removeChild(container)
+                                win()
+                            }
+                        }, 1000)
+                    }else{
+                        //wrong
+                        setTimeout(() => {
+                            for(let x of pairs){ 
+                                let src = x.getAttribute("src")
+                                x.setAttribute("src" , x.getAttribute("data-lic") )
+                                x.setAttribute("data-lic" , src)
+                            }
+                            pairs = []
+                            playable = true
+                        }, 1000);
+                    }             
+                }
+                
+           }
+           body_section.innerHTML = `<div class="body">${body}</div> <div class="pokusy">${pokusy}</div>`
+
+        }
+
+        function win(){ 
+            const element = document.createElement("section")
+            element.setAttribute("class" , "win_dialog")
+            
+            document.body.appendChild(element)
+        }
+
+
+    </script>
+    
+</body>
+</html>

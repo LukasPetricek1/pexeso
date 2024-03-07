@@ -1,0 +1,72 @@
+.opening_dialog{ 
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    height:60vh;
+    width:60vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    transition:.2s;
+}
+
+.opening_dialog h1{ 
+    font-size:5rem;
+}
+
+.opening_dialog h1 span{ 
+    position:relative;
+    color:blue;
+    cursor: pointer;
+    transition: .5s;
+}
+
+.opening_dialog h1 span::before{
+    content: "";
+    position:absolute;
+    bottom:0px;
+    left:0px;
+    height:5px;
+    width:100%;
+    background:rgb(0, 132, 255);
+    transform: scaleX(0);
+    transition: .5s;
+    border-radius:40px;
+}
+
+.opening_dialog h1 span:hover{ 
+    font-size:110%
+}
+
+.opening_dialog h1 span:hover::before{ 
+    transform: scaleX(1);
+}
+
+.opening_dialog .pexeso_formats{ 
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.opening_dialog .pexeso_formats .format_box{ 
+    background-color: rgba(201, 198, 198,0.8);
+    border-radius:20px;
+    padding:5px;
+    height:40px;
+    width:150px;
+    margin:10px;
+    display: grid;
+    place-content: center;
+    font-size:2rem;
+    font-weight:bold;
+    cursor: pointer;
+    transition:.5s
+}
+
+
+#selected_format{ 
+    background:blue;
+    color:white;
+    transform:scale(1.1)
+}

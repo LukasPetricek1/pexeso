@@ -1,0 +1,87 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
+html{ 
+    scroll-behavior: smooth;
+    user-select: none;
+}
+
+
+.container{ 
+    position:relative;
+    height:auto;
+    width:100vw;
+    height:100vh;
+    overflow-y:scroll;
+    overflow-x:hidden;
+    display:flex;
+    flex-direction:column;
+}
+
+.container::-webkit-scrollbar{
+    display: none;
+}
+
+.body_section{ 
+    position:relative;
+    height:10%;
+    width:100%;
+    display:flex;
+    align-items: center;
+    justify-content: space-around;
+    font-size:2rem;
+    font-weight:bold;
+    color:grey
+}
+
+.body_section .body::before{ 
+    content: "Body: "
+}
+
+.body_section .pokusy::before{ 
+    content: "Pokusy: ";
+}   
+
+.game_section{ 
+    position:relative;
+    height:auto;
+    width:100%;
+}
+
+.karta{
+    height:250px;
+    width:250px;
+    background-position: center;
+    background-size:cover;
+    border-radius:30px;
+    box-shadow: 0 0 10px black;
+    margin:20px;
+    cursor: pointer;
+    transition:.5s
+}
+
+.karta:hover{ 
+    transform: scale(1.1);
+}
+
+@keyframes scale {
+    0%{
+        transform: translate(-50%,-50%) scale(0);
+    }100%{
+        transform: translate(-50%,-50%) scale(1);
+    }
+}
+
+.win_dialog{ 
+    height:60vh;
+    width:40vw;
+    background:blue;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    animation: scale .5s linear 1;
+}
+
