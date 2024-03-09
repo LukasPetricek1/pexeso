@@ -6,6 +6,7 @@
     <title>Pexeso</title>
     <link rel="stylesheet" href="./opening.css">
     <link rel="stylesheet" href="./style.css">
+    <script src="https://kit.fontawesome.com/7842dc0936.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -50,13 +51,44 @@
         }
         //------------------------------------------------------------------
 
-        let cards = []
+        let cards = [],
+            Timer,
+            time = { 
+                ms : 0,
+                s: 0,
+                m: 0
+            },
+            hints = 0,
+            collection = []
  
         const container = document.createElement("section")
         container.setAttribute("class" , "container")
+
+        const navigation = document.createElement("nav")
+
+        const time_section = document.createElement("div")
+        time_section.setAttribute("class" , "time")
+
         const body_section = document.createElement("section")
         body_section.setAttribute("class" , "body_section")
         body_section.innerHTML = `<div class="body">0</div> <div class="pokusy">0</div>`
+
+        const hint = document.createElement("div")
+        hint.setAttribute("class", "hint")
+    
+        hint.addEventListener("click" , () => Hint())
+
+        const home = document.createElement("div")
+        home.setAttribute("class" , "home")
+        home.innerHTML = `
+            <i onclick="goHome()" class="fa-solid fa-house"></i>
+        `
+
+        navigation.appendChild(time_section)
+        navigation.appendChild(body_section)
+        navigation.appendChild(hint)
+        navigation.appendChild(home)
+
         const game_section = document.createElement("section")
         game_section.setAttribute("class" , "game_section")
 
@@ -74,7 +106,7 @@
                 if(cards.indexOf(number) === -1 || cards.indexOf(number) == cards.lastIndexOf(number)){
                     const card = document.createElement("img")
                     card.setAttribute("id", number)
-                    card.setAttribute("class" , "karta")
+                    card.setAttribute("class" , "karta hover-effect")
                     card.setAttribute("src", "images/rub.jpg")
                     card.setAttribute("data-lic", `images/${number}.jpg`)
                     card.addEventListener("click" , tah)
@@ -82,19 +114,20 @@
                     game_section.appendChild(card)
                 }
             }
-            container.appendChild(body_section)
+            container.appendChild(navigation)
             container.appendChild(game_section)
             document.body.appendChild(container)
+            timer()
         }
 
         let pairs = []
         let playable = true
         let body = 0
         let pokusy = 0
+
         function tah(){
 
-
-           if(playable){
+           if(playable && !String(this.getAttribute("class")).includes("solved")){
                 const new_src = this.getAttribute("data-lic")
                 const current_src = this.getAttribute("src")
                 this.setAttribute("data-lic" , current_src)
@@ -106,7 +139,16 @@
                     pokusy += 1
                     pairs.pop()
                 }
-                
+                if(pairs.length == 1){
+                    hint.innerHTML = `
+                        <div class="content hover-effect">
+                            <h1>Hint</h1><i class='fa-regular fa-lightbulb'></i>
+                        </div>
+                    `
+                }else{
+                    hint.innerHTML = ''
+                }
+
                 if(pairs.length == 2){
                     pokusy += 1
                     playable = false 
@@ -114,16 +156,20 @@
                         //right
                         body += 10
                         body_section.innerHTML = body
+
+                        for(let x of pairs){
+                            x.setAttribute("class" , x.getAttribute("class").replace(/spravna|hover-effect|karta/g , "solved"))
+                        }
+                        
                         setTimeout(() => {
+                            playable = true
                             for(let x of pairs){ 
-                                playable = true
-                                game_section.removeChild(x)
+                                cards = cards.filter(value => value != x)
                             }
                             pairs = []
                             playable = true
-                            if(body == format * 10){ 
-                                document.body.removeChild(container)
-                                win()
+                            if(cards.length === format * 2){ 
+                                end()
                             }
                         }, 1000)
                     }else{
@@ -142,14 +188,66 @@
                 
            }
            body_section.innerHTML = `<div class="body">${body}</div> <div class="pokusy">${pokusy}</div>`
-
         }
 
-        function win(){ 
+        function Hint(){ 
+            const current = pairs[0]
+            for(let target of cards){ 
+                if(target.id == current.id && target != current){ 
+                    body -= 5
+                    hints += 1
+                    target.setAttribute("class" , target.getAttribute("class") + " spravna")
+                }   
+            }
+        }   
+
+        function goHome(){
+            location.pathname = "/PEXESO/index.html"
+        }
+
+
+        function end(){  
             const element = document.createElement("section")
-            element.setAttribute("class" , "win_dialog")
-            
+            element.setAttribute("class" , "end_dialog")
+
+            element.innerHTML = `
+                <section class="heading">
+                    <h1>Your Highlights</h1>
+                    <i onclick="goHome()" class="hover-effect fa-solid fa-house"></i>
+                </section>
+                <section class="shrnuti">
+                    <ul class="hover-effect">
+                        <li>${time.m}m : ${time.s}s</li>
+                        <li>${pokusy}</li>
+                        <li>${body}</li>
+                        <li>${hints}</li>
+                    </ul>
+                </section>   n
+            `
+
+            document.body.removeChild(container)
             document.body.appendChild(element)
+        }
+
+        function timer(){ 
+            Timer = setInterval(() => {
+                time.ms += 100
+                if(time.ms === 1000){ 
+                    time.ms = 0
+                    time.s += 1
+                }
+                if(time.s === 60){
+                    time.s = 0 
+                    time.m += 1
+                }
+                if(time.m === 60){ 
+                    alert("You have reach the maximum time. Try it again.")
+                    time.m = 0
+                    clearInterval(Timer)
+                    end()
+                }
+                time_section.innerHTML = `${time.m}m : ${time.s}s : ${time.ms/100}`
+            }, 100)
         }
 
 

@@ -8,26 +8,57 @@ html{
     user-select: none;
 }
 
+.hover-effect{ 
+    transform:scale(1);
+    transition: .5s;
+    cursor:pointer
+}
+
+.hover-effect:hover{
+    transform: scale(1.1);
+}
+
 
 .container{ 
     position:relative;
     height:auto;
     width:100vw;
     height:100vh;
-    overflow-y:scroll;
-    overflow-x:hidden;
     display:flex;
     flex-direction:column;
+    overflow-x:hidden
 }
 
 .container::-webkit-scrollbar{
     display: none;
 }
 
-.body_section{ 
+nav{ 
+    height:100px;
+    width:100vw;
+    overflow:hidden;
+    background:rgb(226, 226, 226);
+    position:fixed;
+    top:0;
+    z-index:9999; 
+    display:flex;
+}
+
+nav .time{
+    position: relative;
+    height:100%;
+    width:15%;
+    display: grid;
+    place-content: center;
+    color:grey;
+    font-size:1rem;
+    font-weight:bold
+}
+
+nav .body_section{ 
     position:relative;
-    height:10%;
-    width:100%;
+    height:100%;
+    width:40%;
     display:flex;
     align-items: center;
     justify-content: space-around;
@@ -36,18 +67,71 @@ html{
     color:grey
 }
 
-.body_section .body::before{ 
+nav .body_section .body::before{ 
     content: "Body: "
 }
 
-.body_section .pokusy::before{ 
+nav .body_section .pokusy::before{ 
     content: "Pokusy: ";
 }   
+
+nav .hint{
+    width:20%;
+    height:100%;
+    display:grid;
+    place-content: center;
+}
+
+@keyframes hint {
+    0%{
+        transform:scale(0)
+    }
+    100%{
+        transform:scale(1)
+    }
+}
+
+nav .hint .content{ 
+    color:white;
+    display: flex;
+    background:blue;
+    padding:10px 20px;
+    border-radius:20px;
+    animation: hint .2s linear 1
+}
+
+nav .hint .content:hover{ 
+    color:rgb(255, 196, 0)
+}
+
+nav .hint .content > h1{ 
+    margin-right:10px;
+}
+
+nav .home{
+    height:100%;
+    width: 30%;
+    display: grid;
+    place-content: center;
+}
+
+nav .home > i{
+    transform:scale(2);
+    cursor: pointer;
+    transition: .5s;
+}
+
+nav .home > i:hover{ 
+    transform:scale(2.5)
+}
 
 .game_section{ 
     position:relative;
     height:auto;
     width:100%;
+    margin-top:100px;
+    display:flex;
+    flex-wrap:wrap
 }
 
 .karta{
@@ -58,30 +142,99 @@ html{
     border-radius:30px;
     box-shadow: 0 0 10px black;
     margin:20px;
-    cursor: pointer;
-    transition:.5s
 }
 
-.karta:hover{ 
-    transform: scale(1.1);
+.solved{ 
+    height:250px;
+    width:250px;
+    margin:20px;
+}
+
+@keyframes right_card {
+    0%{
+        transform: scale(1);
+    }50%{
+        transform: scale(1.2);
+    }100%{
+        transform: scale(1);
+    }
+}
+
+.spravna{ 
+    animation:right_card 1s linear infinite
 }
 
 @keyframes scale {
     0%{
-        transform: translate(-50%,-50%) scale(0);
+        opacity:0
     }100%{
-        transform: translate(-50%,-50%) scale(1);
+        opacity:1
     }
 }
 
-.win_dialog{ 
-    height:60vh;
-    width:40vw;
-    background:blue;
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform: translate(-50%,-50%);
+.end_dialog{ 
+    position:relative;
+    height:100vh;
+    width:100vw;
     animation: scale .5s linear 1;
+    display:flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
+.end_dialog .heading{ 
+    position: relative;
+    height:10vh;
+    width:100vw;
+    font-size:3rem;
+    display:flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.end_dialog .heading > i{
+    position: relative;
+    right:50px;
+}
+
+.end_dialog .shrnuti{ 
+    position: relative;
+    height:20vh;
+    width:100vw;
+    display:grid;
+    place-content:center;
+}
+
+.end_dialog .shrnuti ul{ 
+    position:relative;
+    height:5vh;
+    width:80vw;
+    list-style-type: none;
+    display:flex;
+    align-items: center;
+    justify-content: space-evenly;
+    background-color:rgb(0, 80, 252);
+    border-radius: 50px;
+    color:white
+}
+
+.end_dialog .shrnuti ul li::before{
+    font-weight:bold;
+    font-size:1.5rem
+}
+
+.end_dialog .shrnuti ul li:nth-child(1)::before{
+    content:"Čas: "
+}
+
+.end_dialog .shrnuti ul li:nth-child(2)::before{
+    content:"Pokusy: "
+}
+
+.end_dialog .shrnuti ul li:nth-child(3)::before{
+    content:"Body: "
+}
+
+.end_dialog .shrnuti ul li:nth-child(4)::before{
+    content:"Počet rad: "
+}
