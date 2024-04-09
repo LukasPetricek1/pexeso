@@ -7,11 +7,12 @@
     <link rel="stylesheet" href="./opening.css">
     <link rel="stylesheet" href="./style.css">
     <script src="https://kit.fontawesome.com/7842dc0936.js" crossorigin="anonymous"></script>
+    <link rel="icon" type="image/png" href="icon.png">
 </head>
 <body>
 
     <section class="opening_dialog">
-        <h1><span onclick="hrat()">Hrát</span> Pexeso</h1>
+        <h1><span id="play-button">Hrát</span> Pexeso</h1>
         <div class="pexeso_formats">
             <div data-format="2" class="format_box" id="selected_format">2x2</div>
             <div data-format="4" class="format_box">4x4</div>
@@ -24,6 +25,7 @@
 
 
     <script>
+        const PlayButton = document.getElementById("play-button")
         const opening_dialog = document.querySelector(".opening_dialog")
         const formats = document.getElementsByClassName("format_box")
         let selected = document.getElementById("selected_format")
@@ -32,7 +34,9 @@
             Prodani stylu pro bunky formatu. Nedelam to pres css:hover, protoze tim, ze pridam
             id danymu prvku, tak tim ho take vyberu.
         */
-        for(let element of formats){
+    function init(){
+   
+         for(let element of formats){
             element.onclick = function (){ 
                 if(selected != element){
                     selected.removeAttribute("id")
@@ -81,7 +85,7 @@
         const home = document.createElement("div")
         home.setAttribute("class" , "home")
         home.innerHTML = `
-            <i onclick="goHome()" class="fa-solid fa-house"></i>
+            <i onclick="location.pathname='/index.html'" class="fa-solid fa-house"></i>
         `
 
         navigation.appendChild(time_section)
@@ -119,6 +123,8 @@
             document.body.appendChild(container)
             timer()
         }
+
+        PlayButton.addEventListener("click" , hrat)
 
         let pairs = []
         let playable = true
@@ -202,31 +208,62 @@
         }   
 
         function goHome(){
-            location.pathname = "/PEXESO/index.html"
+            location.pathname = "/index.html"
         }
 
 
         function end(){  
-            const element = document.createElement("section")
-            element.setAttribute("class" , "end_dialog")
+            document.body.removeChild(container)
 
-            element.innerHTML = `
-                <section class="heading">
-                    <h1>Your Highlights</h1>
-                    <i onclick="goHome()" class="hover-effect fa-solid fa-house"></i>
-                </section>
-                <section class="shrnuti">
-                    <ul class="hover-effect">
-                        <li>${time.m}m : ${time.s}s</li>
-                        <li>${pokusy}</li>
-                        <li>${body}</li>
-                        <li>${hints}</li>
-                    </ul>
-                </section>   n
+            let data = JSON.parse(localStorage.getItem("user-data"))
+            if(!data){ 
+                data = []
+            }
+            data.push({time, pokusy, percentage: (format * 100 / pokusy).toFixed(2), body, id : data.length + 1, karty : Number(format)})
+
+            console.log(data)
+            localStorage.setItem("user-data" , JSON.stringify(data))
+
+            const endContainer = document.createElement("section")
+            endContainer.setAttribute("class" , "end-container")
+            
+            const element = document.createElement("section")
+            element.setAttribute("class" , "summary")
+
+            const endHeading = document.createElement("nav")
+            endHeading.setAttribute("class" , "end-heading")
+
+            endHeading.innerHTML = `
+                <h1>Your Highlights</h1>
+                <i onclick="location.pathname='/index.html'" class="hover-effect fa-solid fa-house"></i>
             `
 
-            document.body.removeChild(container)
-            document.body.appendChild(element)
+            endContainer.appendChild(endHeading)
+
+            data.map(({time, pokusy, body, id, karty, percentage}) => { 
+                const section = document.createElement("section")
+
+                section.innerHTML = `
+                        <ul>
+                            <li>${time.m}m : ${time.s}s</li>
+                            <li>${pokusy}</li>
+                            <li>${body}</li>
+                            <li>${karty}</li>
+                            <li>${percentage}</li>
+                        </ul>
+                `
+
+                section.onclick = function(){ 
+                    element.removeChild(this)
+                    data = data.filter(a => a.id !== id)
+                    localStorage.setItem("user-data", JSON.stringify(data))
+                }
+
+                element.appendChild(section)
+            })
+
+            endContainer.appendChild(element)
+            document.body.appendChild(endContainer)
         }
 
         function timer(){ 
@@ -249,7 +286,11 @@
                 time_section.innerHTML = `${time.m}m : ${time.s}s : ${time.ms/100}`
             }, 100)
         }
+    }
 
+    document.addEventListener("DOMContentLoaded" , () => { 
+        init()
+    })
 
     </script>
     

@@ -172,69 +172,101 @@ nav .home > i:hover{
     }
 }
 
-.end_dialog{ 
+.end-container {
     position:relative;
     height:100vh;
     width:100vw;
-    animation: scale .5s linear 1;
     display:flex;
     flex-direction: column;
-    overflow: hidden;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-x: hidden;
+    overflow-y:scroll;
 }
 
-.end_dialog .heading{ 
+.end-container::-webkit-scrollbar{ 
+    appearance:none;
+    width:5px;
+}
+
+.end-container::-webkit-scrollbar-thumb{
+    background:grey;
+    border-radius:20px;
+    cursor: pointer;
+}
+
+.end-heading{ 
     position: relative;
     height:10vh;
-    width:100vw;
-    font-size:3rem;
+    width:100%;
+    background:rgb(218, 217, 217);
     display:flex;
     align-items: center;
     justify-content: space-around;
+    color:grey
 }
 
-.end_dialog .heading > i{
+.end-container h1{ 
+    font-size: 2rem;
+}
+
+.end-heading i{ 
+    transform:scale(2)
+}
+
+.summary{ 
     position: relative;
-    right:50px;
-}
-
-.end_dialog .shrnuti{ 
-    position: relative;
-    height:20vh;
-    width:100vw;
-    display:grid;
-    place-content:center;
-}
-
-.end_dialog .shrnuti ul{ 
-    position:relative;
-    height:5vh;
-    width:80vw;
-    list-style-type: none;
+    height:80%;
+    width:100%;
     display:flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-evenly;
-    background-color:rgb(0, 80, 252);
-    border-radius: 50px;
     color:white
 }
 
-.end_dialog .shrnuti ul li::before{
+.summary section ul{ 
+    list-style: none;
+    display:flex;
+    justify-content: space-evenly;
+    background-color: blue;
+    border-radius:30px;
+    width:80vw;
+    padding:5px;
+    margin:10px 0px;
+    transition: 0.5s;
+}
+
+.summary section ul:hover{ 
+    background-color: red;
+    cursor: pointer;
+}
+
+
+.summary ul li::before{
     font-weight:bold;
     font-size:1.5rem
 }
 
-.end_dialog .shrnuti ul li:nth-child(1)::before{
+.summary ul li:nth-child(1)::before{
     content:"Čas: "
 }
 
-.end_dialog .shrnuti ul li:nth-child(2)::before{
+.summary ul li:nth-child(2)::before{
     content:"Pokusy: "
 }
 
-.end_dialog .shrnuti ul li:nth-child(3)::before{
+.summary ul li:nth-child(3)::before{
     content:"Body: "
 }
 
-.end_dialog .shrnuti ul li:nth-child(4)::before{
-    content:"Počet rad: "
+.summary ul li:nth-child(4)::before{
+    content:"Počet karet: "
+}
+
+.summary ul li:nth-child(5)::before{
+    content:"Úspěšnost: "
+}
+
+.summary ul li:nth-child(5)::after{
+    content:" %"
 }
